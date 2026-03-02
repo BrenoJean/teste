@@ -4,7 +4,7 @@ import { FinancialData, INITIAL_DATA, Language } from './types';
 import { InputForm } from './components/InputForm';
 import { ReportPreview } from './components/ReportPreview';
 import { generateFinancialInsights } from './services/geminiService';
-import Login from './components/Login';
+import Login from "./components/Login"; // ✅ import correto
 
 const App: React.FC = () => {
   const [logged, setLogged] = useState(false);
