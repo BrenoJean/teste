@@ -3,6 +3,9 @@
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
+const fmt = (value: number) =>
+  new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value || 0));
+
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -48,42 +51,83 @@ export default async function handler(req: any, res: any) {
 
     const grossProfitCurrent =
       data.dreRevenueCurrent - data.dreCostOfSalesCurrent;
+    const grossProfitPrev = data.dreRevenuePrev - data.dreCostOfSalesPrev;
 
     const totalExpensesCurrent =
       data.dreOperatingExpensesCurrent +
       data.dreOtherExpensesCurrent +
       data.dreIncomeTaxCurrent;
+    const totalExpensesPrev =
+      data.dreOperatingExpensesPrev +
+      data.dreOtherExpensesPrev +
+      data.dreIncomeTaxPrev;
 
     const netIncomeCurrent = grossProfitCurrent - totalExpensesCurrent;
+    const netIncomePrev = grossProfitPrev - totalExpensesPrev;
 
     const totalLiabilitiesCurrent =
       data.liabilityPayablesCurrent +
       data.liabilityLongTermCurrent +
       data.liabilityOtherCurrent;
+    const totalLiabilitiesPrev =
+      data.liabilityPayablesPrev +
+      data.liabilityLongTermPrev +
+      data.liabilityOtherPrev;
+
+    const dataset = {
+      years: { current: data.year, previous: data.prevYear },
+      balanceSheet: {
+        assets: {
+          total: { current: totalAssetsCurrent, previous: totalAssetsPrev },
+          cash: { current: data.assetCashCurrent, previous: data.assetCashPrev },
+          loans: { current: data.assetLoansCurrent, previous: data.assetLoansPrev },
+          investments: { current: data.assetInvestmentsCurrent, previous: data.assetInvestmentsPrev },
+          tangible: { current: data.assetTangibleCurrent, previous: data.assetTangiblePrev },
+          intangible: { current: data.assetIntangibleCurrent, previous: data.assetIntangiblePrev },
+          other: { current: data.assetOtherCurrent, previous: data.assetOtherPrev },
+        },
+        liabilities: {
+          total: { current: totalLiabilitiesCurrent, previous: totalLiabilitiesPrev },
+        },
+        equity: {
+          total: { current: data.equityTotalCurrent, previous: data.equityTotalPrev },
+        },
+      },
+      incomeStatement: {
+        revenue: { current: data.dreRevenueCurrent, previous: data.dreRevenuePrev },
+        costOfSales: { current: data.dreCostOfSalesCurrent, previous: data.dreCostOfSalesPrev },
+        grossProfit: { current: grossProfitCurrent, previous: grossProfitPrev },
+        operatingExpenses: { current: data.dreOperatingExpensesCurrent, previous: data.dreOperatingExpensesPrev },
+        otherExpenses: { current: data.dreOtherExpensesCurrent, previous: data.dreOtherExpensesPrev },
+        incomeTax: { current: data.dreIncomeTaxCurrent, previous: data.dreIncomeTaxPrev },
+        totalExpenses: { current: totalExpensesCurrent, previous: totalExpensesPrev },
+        netIncome: { current: netIncomeCurrent, previous: netIncomePrev },
+      },
+    };
 
     const prompt = `
-Atue como um analista financeiro sênior da "Keep Gestão Contábil".
+Atue como analista financeiro sênior da Keep Gestão Contábil.
 
-Analise os seguintes dados financeiros da empresa "${data.companyName}" para o ano de ${data.year} comparado a ${data.prevYear}:
+Tarefa: produzir 3 parágrafos de insights financeiros para ${data.companyName}, comparando ${data.prevYear} vs ${data.year}.
 
-Dados Balanço (em USD):
-- Ativos Totais: ${totalAssetsCurrent} (Anterior: ${totalAssetsPrev})
-- Caixa e Equivalentes: ${data.assetCashCurrent}
-- Passivos Totais: ${totalLiabilitiesCurrent}
-- Patrimônio Líquido: ${data.equityTotalCurrent}
+REGRAS OBRIGATÓRIAS (não descumprir):
+1) Use SOMENTE os números do dataset abaixo. Não invente valores, percentuais, causas, tendências ou contexto externo.
+2) Sempre que citar variação, calcule com base exclusiva nos dados informados.
+3) Priorize comentar linhas com valores NÃO zero e materialidade mais alta; não foque em linhas zeradas.
+4) Se algum ponto não puder ser concluído pelos dados, diga explicitamente: "não é possível concluir com os dados disponíveis".
+5) Não afirmar ausência total de passivos, crescimento patrimonial, reinvestimento, liquidez confortável ou qualquer conclusão qualitativa sem suporte numérico explícito.
+6) Cite números com 2 casas decimais.
+7) Não use markdown, listas ou títulos. Apenas texto corrido em 3 parágrafos.
 
-Dados DRE (em USD):
-- Receita: ${data.dreRevenueCurrent}
-- Custo das Vendas: ${data.dreCostOfSalesCurrent}
-- Lucro Bruto: ${grossProfitCurrent}
-- Despesas Operacionais: ${data.dreOperatingExpensesCurrent}
-- Outras despesas: ${data.dreOtherExpensesCurrent}
-- Imposto de renda e contribuições: ${data.dreIncomeTaxCurrent}
-- Lucro Líquido: ${netIncomeCurrent}
+Resumo numérico rápido (USD):
+- Ativos totais: ${fmt(totalAssetsCurrent)} (anterior: ${fmt(totalAssetsPrev)})
+- Passivos totais: ${fmt(totalLiabilitiesCurrent)} (anterior: ${fmt(totalLiabilitiesPrev)})
+- Patrimônio líquido: ${fmt(data.equityTotalCurrent)} (anterior: ${fmt(data.equityTotalPrev)})
+- Receita: ${fmt(data.dreRevenueCurrent)} (anterior: ${fmt(data.dreRevenuePrev)})
+- Lucro líquido: ${fmt(netIncomeCurrent)} (anterior: ${fmt(netIncomePrev)})
 
-Gere 3 parágrafos concisos e profissionais de "Notas da Administração" ou "Insights Financeiros" para serem incluídos no relatório anual.
-Foque em liquidez, rentabilidade e variação patrimonial entre ${data.prevYear} e ${data.year}.
-Use um tom formal. Não use markdown, apenas texto puro separado por parágrafos.
+Dataset completo (JSON):
+${JSON.stringify(dataset)}
 
 ${languageInstruction}
     `;
@@ -97,11 +141,12 @@ ${languageInstruction}
       },
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
+        temperature: 0.1,
         messages: [
           {
             role: "system",
             content:
-              "Você é um analista financeiro sênior especializado em relatórios contábeis e análise de demonstrações financeiras.",
+              "Você é um analista financeiro sênior extremamente rigoroso com precisão numérica. Nunca invente números, nunca extrapole sem base e destaque apenas conclusões suportadas pelos dados recebidos.",
           },
           {
             role: "user",
