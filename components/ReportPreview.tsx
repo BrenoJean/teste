@@ -184,14 +184,14 @@ export const ReportPreview: React.FC<ReportPreviewProps> = ({ data, insights, pr
   );
 
   return (
-    <div className="print-container font-serif text-black leading-snug">
+    <div className="print-container font-serif text-black leading-snug [font-variant-numeric:lining-nums_tabular-nums]">
       
       {/* PAGE 1: COVER */}
       <div className="a4-page flex flex-col justify-between items-center text-center">
         <div className="mt-48 w-full">
           <h1 className="text-4xl font-bold mb-4">{data.companyName}</h1>
           <h2 className="text-2xl text-black font-bold mb-2">{t.finStatements}</h2>
-          <h3 className="text-2xl font-bold">{data.year}</h3>
+          <h3 className="text-2xl font-bold leading-none tracking-wide [font-variant-numeric:lining-nums_tabular-nums]">{data.year}</h3>
         </div>
 
         <div className="w-full border-t-2 border-gray-400 pt-4 mb-12">
@@ -271,7 +271,7 @@ export const ReportPreview: React.FC<ReportPreviewProps> = ({ data, insights, pr
             <div className="mt-12 border-t border-black w-1/3 pt-2">
               <p className="font-bold uppercase">{data.accountantName}</p>
               <p className="text-xs text-black font-bold">KEEP GESTÃO CONTÁBIL</p>
-              <p>{data.crcNumber}</p>
+              <p className="font-sans tracking-wide [font-variant-numeric:lining-nums_tabular-nums]">{data.crcNumber}</p>
             </div>
           </div>
         </div>
