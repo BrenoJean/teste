@@ -133,7 +133,7 @@ const translations = {
 // Utility for currency formatting
 const formatCurrency = (val: number) => {
   if (val === 0 || isNaN(val)) return "-";
-  return new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(val);
+  return new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val);
 };
 
 export const ReportPreview: React.FC<ReportPreviewProps> = ({ data, insights, printInsights, language }) => {
