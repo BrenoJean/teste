@@ -66,7 +66,7 @@ const translations = {
     aiHeaderSub: "Technical Analysis & Data Intelligence",
     execSummary: "Executive Summary",
     reportBody1: "We have compiled the accompanying financial statements of the company based on information you have provided. These financial statements comprise the statement of financial position of the Company as at December 31st, {YEAR}, the statement of comprehensive income, statement of changes in equity and statement of cash flows for the year then ended.",
-    reportBody2: "We have applied our expertise in accounting and financial reporting to assist you in the preparation and presentation of these financial statements in accordance with practices adopted in Brazil (BR GAAP) and International Financial Reporting Standards (IFRS). We have complied with relevant ethical requirements, including principles of integrity, objectivity, professional competence and due care.",
+    reportBody2: "We applied our experience in accounting and financial reporting to assist you in preparing and presenting these financial statements in accordance with International Financial Reporting Standards (IFRS) and in compliance with Law 14.754/2023. We complied with relevant ethical requirements, including principles of integrity, objectivity, professional competence and due care.",
     reportBody3: "Since a compilation engagement is not an assurance engagement, we are not required to verify the accuracy or completeness of the information you provided to us. The information used to compile them are your responsibility. We do not express an audit opinion."
   },
   pt: {
@@ -125,7 +125,7 @@ const translations = {
     aiHeaderSub: "Análise Técnica & Inteligência de Dados",
     execSummary: "Resumo Executivo",
     reportBody1: "Compilamos as demonstrações financeiras anexas da empresa com base nas informações fornecidas pela administração. Estas demonstrações financeiras compreendem o balanço patrimonial da Companhia em 31 de dezembro de {YEAR}, a demonstração do resultado abrangente, a demonstração das mutações do patrimônio líquido e a demonstração dos fluxos de caixa para o exercício findo nessa data.",
-    reportBody2: "Aplicamos nossa experiência em contabilidade e relatórios financeiros para auxiliá-lo na preparação e apresentação destas demonstrações financeiras de acordo com as práticas adotadas no Brasil (BR GAAP) e Normas Internacionais de Relatório Financeiro (IFRS). Cumprimos os requisitos éticos relevantes, incluindo princípios de integridade, objetividade, competência profissional e zelo devido.",
+    reportBody2: "Aplicamos nossa experiência em contabilidade e relatórios financeiros para auxiliá-lo na preparação e apresentação destas demonstrações financeiras de acordo com as práticas adotadas nas Normas Internacionais de Relatório Financeiro (IFRS) e em conformidade com a lei 14.754/2023. Cumprimos os requisitos éticos relevantes, incluindo princípios de integridade, objetividade, competência profissional e zelo devido.",
     reportBody3: "Como um trabalho de compilação não é um trabalho de asseguração, não somos obrigados a verificar a precisão ou a integridade das informações que você nos forneceu. As informações usadas para compilá-las são de sua responsabilidade. Não expressamos uma opinião de auditoria."
   }
 };
