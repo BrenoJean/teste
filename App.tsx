@@ -6,6 +6,14 @@ import { ReportPreview } from './components/ReportPreview';
 import { generateFinancialInsights } from './services/geminiService';
 import Login from "./components/Login"; // ✅ import correto
 
+const buildReportDate = (lang: Language, year: string) => {
+  if (lang === 'en') {
+    return `December 31, ${year}`;
+  }
+
+  return `31 de Dezembro de ${year}`;
+};
+
 const App: React.FC = () => {
   const [logged, setLogged] = useState(false);
   const [data, setData] = useState<FinancialData>(INITIAL_DATA);
@@ -13,6 +21,17 @@ const App: React.FC = () => {
   const [insights, setInsights] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [printInsights, setPrintInsights] = useState(false);
+
+  const handleLanguageChange = (nextLanguage: Language) => {
+    setLanguage(nextLanguage);
+    setInsights(null);
+    setPrintInsights(false);
+
+    setData((prev) => ({
+      ...prev,
+      reportDate: buildReportDate(nextLanguage, prev.year),
+    }));
+  };
 
   const handleDataChange = (field: keyof FinancialData, value: string | number | boolean) => {
     setData(prev => {
@@ -94,7 +113,7 @@ const App: React.FC = () => {
           <InputForm 
             data={data} 
             language={language}
-            setLanguage={setLanguage}
+            setLanguage={handleLanguageChange}
             onChange={handleDataChange} 
             onGenerateInsights={handleGenerateInsights}
             isGenerating={isGenerating}
